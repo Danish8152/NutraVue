@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Population Nutrition System - FoodScan Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Primary Colors */
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary: #ec4899;
+            --accent: #8b5cf6;
+            
+            /* Status Colors */
+            --success: #10b981;
+            --success-light: #34d399;
+            --warning: #f59e0b;
+            --warning-light: #fbbf24;
+            --danger: #ef4444;
+            --danger-light: #f87171;
+            --info: #3b82f6;
+            
+            /* Gradients */
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            --gradient-danger: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            --gradient-purple: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            
+            /* Dark Theme */
+            --bg-primary: #1f2937;
+            --bg-secondary: #111827;
+            --bg-tertiary: #0f172a;
+            --text-primary: #f9fafb;
+            --text-secondary: #d1d5db;
+            --text-tertiary: #9ca3af;
+            --border-color: #374151;
+            --shadow-color: rgba(0, 0, 0, 0.5);
+            
+            /* Shadows */
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px -1px var(--shadow-color);
+            --shadow-md: 0 10px 15px -3px var(--shadow-color);
+            --shadow-lg: 0 20px 25px -5px var(--shadow-color);
+            --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+            
+            /* Border Radius */
+            --radius-sm: 8px;
+            --radius: 12px;
+            --radius-md: 16px;
+            --radius-lg: 20px;
+            --radius-xl: 24px;
+            --radius-full: 9999px;
+            
+            /* Transitions */
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--gradient-primary);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text-primary);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff 0%, #e0e7ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .mode-selector {
+            background: var(--bg-primary);
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-color);
+        }
+
+        .mode-selector h2 {
+            color: var(--text-primary);
+            margin-bottom: 5px;
+            font-size: 1.3em;
+            font-weight: 700;
+        }
+
+        .mode-selector p {
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+            font-size: 0.95em;
+        }
+
+        #modeText {
+            color: var(--primary-light);
+            font-weight: 600;
+        }
+
+        .mode-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .mode-btn {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px 20px;
+            border: 2px solid var(--border-color);
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            transition: all var(--transition-base);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mode-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left var(--transition-slow);
+        }
+
+        .mode-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .mode-btn:hover::before {
+            left: 100%;
+        }
+
+        .mode-btn.active {
+            background: var(--gradient-primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .test-products {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .product-card {
+            background: var(--bg-primary);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transition: transform var(--transition-base);
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--primary);
+        }
+
+        .product-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .product-card h3 {
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        .nutrition-info {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin: 10px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .nutrition-info span {
+            padding: 4px 10px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            font-weight: 500;
+        }
+
+        .test-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all var(--transition-base);
+            font-size: 15px;
+        }
+
+        .test-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .test-btn:active {
+            transform: translateY(0);
+        }
+
+        .result-container {
+            background: var(--bg-primary);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-color);
+            display: none;
+        }
+
+        .result-container.active {
+            display: block;
+            animation: slideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .result-emoji {
+            font-size: 4em;
+            animation: bounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .result-info {
+            flex: 1;
+        }
+
+        .result-info h2 {
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-size: 2em;
+            font-weight: 800;
+        }
+
+        .result-info p {
+            color: var(--text-secondary);
+            font-size: 0.95em;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: var(--radius-full);
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .result-explanation {
+            background: var(--bg-secondary);
+            padding: 18px;
+            border-radius: var(--radius);
+            margin-bottom: 25px;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            font-size: 0.95em;
+        }
+
+        .warnings-list, .positives-list {
+            list-style: none;
+            margin-bottom: 25px;
+        }
+
+        .warnings-list li, .positives-list li {
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: start;
+            gap: 12px;
+            font-size: 0.93em;
+            line-height: 1.6;
+        }
+
+        .warnings-list li {
+            background: rgba(239, 68, 68, 0.15);
+            color: #fca5a5;
+            border-left: 4px solid var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .positives-list li {
+            background: rgba(16, 185, 129, 0.15);
+            color: #6ee7b7;
+            border-left: 4px solid var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .disclaimer {
+            background: rgba(245, 158, 11, 0.15);
+            border-left: 4px solid var(--warning);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            padding: 15px;
+            border-radius: var(--radius);
+            font-size: 13px;
+            color: #fcd34d;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        .severity-meter {
+            margin: 25px 0;
+        }
+
+        .severity-meter p {
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95em;
+        }
+
+        .severity-bar {
+            height: 35px;
+            background: linear-gradient(to right, 
+                var(--success) 0%, 
+                var(--warning) 50%, 
+                var(--danger) 100%);
+            border-radius: var(--radius-lg);
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .severity-indicator {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 5px;
+            height: 45px;
+            background: white;
+            box-shadow: 0 0 15px rgba(0,0,0,0.8), 0 0 30px rgba(255,255,255,0.6);
+            border-radius: 3px;
+            transition: left var(--transition-slow);
+        }
+
+        .severity-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--text-tertiary);
+            font-weight: 500;
+        }
+
+        .code-example {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            padding: 18px;
+            border-radius: var(--radius);
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            margin-top: 25px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .code-example div:first-child {
+            color: var(--success);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .code-example span {
+            color: var(--primary-light);
+        }
+
+        .section-title {
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            font-weight: 700;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #warningsSection, #positivesSection {
+            margin-bottom: 25px;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: var(--radius-full);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .mode-buttons {
+                flex-direction: column;
+            }
+
+            .mode-btn {
+                min-width: 100%;
+            }
+
+            .test-products {
+                grid-template-columns: 1fr;
+            }
+
+            .result-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .result-emoji {
+                font-size: 3em;
+            }
+
+            .result-info h2 {
+                font-size: 1.5em;
+            }
+        }
+
+        /* Loading animation */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .loading {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Advanced Safety Evaluation for Vulnerable Groups</h1>
+        </div>
+
+        <!-- Mode Selector -->
+        <div class="mode-selector">
+            <h2>🎯 Select Evaluation Mode</h2>
+            <p id="modeText">Select a mode to evaluate food safety</p>
+            
+            <div class="mode-buttons">
+                <button class="mode-btn" id="standardModeBtn" onclick="setMode(null)">
+                    ⚪ Standard Mode
+                </button>
+                <button class="mode-btn" id="pregnantModeBtn" onclick="setMode('pregnant')">
+                    🤰 Pregnancy Mode
+                </button>
+                <button class="mode-btn" id="childModeBtn" onclick="setMode('child')">
+                    👶 Child Mode (<6 years)
+                </button>
+            </div>
+        </div>
+
+        <!-- Test Products -->
+        <div class="test-products">
+            <div class="product-card" onclick="testProduct('nutella')">
+                <h3>🍫 Nutella</h3>
+                <div class="nutrition-info">
+                    <span>🍬 Sugar: 56.3g</span>
+                    <span>🧈 Fat: 30.9g</span>
+                    <span>🧂 Salt: 0.1g</span>
+                    <span>⚡ 539 kcal</span>
+                </div>
+                <button class="test-btn">Test This Product</button>
+            </div>
+
+            <div class="product-card" onclick="testProduct('bread')">
+                <h3>🍞 Whole Grain Bread</h3>
+                <div class="nutrition-info">
+                    <span>🍬 Sugar: 2.5g</span>
+                    <span>🧈 Fat: 3g</span>
+                    <span>🧂 Salt: 0.5g</span>
+                    <span>💪 Protein: 8g</span>
+                </div>
+                <button class="test-btn">Test This Product</button>
+            </div>
+
+            <div class="product-card" onclick="testProduct('energy')">
+                <h3>⚡ Energy Drink</h3>
+                <div class="nutrition-info">
+                    <span>🍬 Sugar: 11g</span>
+                    <span>☕ Caffeine: 80mg</span>
+                    <span>⚡ 45 kcal</span>
+                </div>
+                <button class="test-btn">Test This Product</button>
+            </div>
+
+            <div class="product-card" onclick="testProduct('apple')">
+                <h3>🍎 Fresh Apple</h3>
+                <div class="nutrition-info">
+                    <span>🍬 Sugar: 10g</span>
+                    <span>🌾 Fiber: 2.4g</span>
+                    <span>⚡ 52 kcal</span>
+                </div>
+                <button class="test-btn">Test This Product</button>
+            </div>
+
+            <div class="product-card" onclick="testProduct('chips')">
+                <h3>🥔 Potato Chips</h3>
+                <div class="nutrition-info">
+                    <span>🧈 Fat: 35g</span>
+                    <span>🧂 Salt: 1.5g</span>
+                    <span>⚡ 536 kcal</span>
+                </div>
+                <button class="test-btn">Test This Product</button>
+            </div>
+
+            <div class="product-card" onclick="testProduct('yogurt')">
+                <h3>🥛 Greek Yogurt</h3>
+                <div class="nutrition-info">
+                    <span>🍬 Sugar: 4g</span>
+                    <span>💪 Protein: 10g</span>
+                    <span>🦴 Calcium: 110mg</span>
+                    <span>⚡ 97 kcal</span>
+                </div>
+                <button class="test-btn">Test This Product</button>
+            </div>
+        </div>
+
+        <!-- Results Container -->
+        <div class="result-container" id="resultContainer">
+            <div class="result-header">
+                <div class="result-emoji" id="resultEmoji">✅</div>
+                <div class="result-info">
+                    <h2 id="resultSuitability">Good Choice</h2>
+                    <p id="resultProduct" style="color: var(--text-secondary);"></p>
+                    <span id="resultBadge" class="badge"></span>
+                </div>
+            </div>
+
+            <div class="severity-meter">
+                <p>📊 Severity Score:</p>
+                <div class="severity-bar">
+                    <div class="severity-indicator" id="severityIndicator"></div>
+                </div>
+                <div class="severity-labels">
+                    <span>0 (Safe)</span>
+                    <span>50 (Moderate)</span>
+                    <span>100+ (Avoid)</span>
+                </div>
+            </div>
+
+            <div class="result-explanation" id="resultExplanation"></div>
+
+            <div id="warningsSection" style="display: none;">
+                <h3 class="section-title">⚠️ Warnings</h3>
+                <ul class="warnings-list" id="warningsList"></ul>
+            </div>
+
+            <div id="positivesSection" style="display: none;">
+                <h3 class="section-title">✅ Positive Aspects</h3>
+                <ul class="positives-list" id="positivesList"></ul>
+            </div>
+
+            <div class="disclaimer" id="disclaimer"></div>
+
+            <div class="code-example">
+                <div>// How to access this result:</div>
+                <div>const result = window.populationFoodReport;</div>
+                <div>console.log(result.suitability); // "<span id="codeOutput"></span>"</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load Population Nutrition System -->
+    <script src="Rule.js"></script>
+    <script src="Evaluator.js"></script>
+    <script src="Integration.js"></script>
+
+    <script>
+        // Test products database
+        const testProducts = {
+            nutella: {
+                name: 'Nutella Hazelnut Spread',
+                nutrition: {
+                    sugar: 56.3,
+                    fat: 30.9,
+                    saturatedFat: 10.6,
+                    salt: 0.107,
+                    protein: 6.3,
+                    fiber: 0,
+                    calories: 539
+                },
+                ingredients: 'sugar, palm oil, hazelnuts, cocoa, skim milk, lecithin, vanillin',
+                allergens: ['nuts', 'dairy']
+            },
+            bread: {
+                name: 'Whole Grain Bread',
+                nutrition: {
+                    sugar: 2.5,
+                    fat: 3,
+                    saturatedFat: 0.5,
+                    salt: 0.5,
+                    protein: 8,
+                    fiber: 6,
+                    calories: 247
+                },
+                ingredients: 'whole grain wheat flour, water, yeast, salt, vegetable oil',
+                allergens: ['gluten']
+            },
+            energy: {
+                name: 'Energy Drink',
+                nutrition: {
+                    sugar: 11,
+                    fat: 0,
+                    salt: 0.2,
+                    protein: 0,
+                    fiber: 0,
+                    calories: 45,
+                    caffeine: 80
+                },
+                ingredients: 'carbonated water, sugar, caffeine, taurine, vitamins, artificial flavoring',
+                allergens: []
+            },
+            apple: {
+                name: 'Fresh Apple',
+                nutrition: {
+                    sugar: 10,
+                    fat: 0.2,
+                    saturatedFat: 0,
+                    salt: 0,
+                    protein: 0.3,
+                    fiber: 2.4,
+                    calories: 52
+                },
+                ingredients: 'apple',
+                allergens: []
+            },
+            chips: {
+                name: 'Potato Chips (Salted)',
+                nutrition: {
+                    sugar: 0.5,
+                    fat: 35,
+                    saturatedFat: 3.1,
+                    salt: 1.5,
+                    protein: 6.6,
+                    fiber: 4.7,
+                    calories: 536
+                },
+                ingredients: 'potatoes, vegetable oil, salt',
+                allergens: []
+            },
+            yogurt: {
+                name: 'Greek Yogurt (Plain)',
+                nutrition: {
+                    sugar: 4,
+                    fat: 5,
+                    saturatedFat: 3.2,
+                    salt: 0.1,
+                    protein: 10,
+                    fiber: 0,
+                    calories: 97,
+                    calcium: 0.11
+                },
+                ingredients: 'pasteurized milk, live cultures',
+                allergens: ['dairy']
+            }
+        };
+
+        let currentMode = null;
+
+        function setMode(mode) {
+            currentMode = mode;
+            
+            // Update button states
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            
+            if (mode === 'pregnant') {
+                document.getElementById('pregnantModeBtn').classList.add('active');
+                document.getElementById('modeText').textContent = '🤰 Pregnancy Mode - Strict safety evaluation for expecting mothers';
+            } else if (mode === 'child') {
+                document.getElementById('childModeBtn').classList.add('active');
+                document.getElementById('modeText').textContent = '👶 Child Mode - Ultra-strict safety for children under 6 years';
+            } else {
+                document.getElementById('standardModeBtn').classList.add('active');
+                document.getElementById('modeText').textContent = '⚪ Standard Mode - No population-specific analysis';
+                document.getElementById('resultContainer').classList.remove('active');
+            }
+
+            // Set mode in the system
+            if (window.populationNutrition) {
+                window.populationNutrition.setMode(mode);
+            }
+        }
+
+        function testProduct(productKey) {
+            if (!currentMode) {
+                alert('⚠️ Please select a population mode first!\n\nChoose either:\n• 🤰 Pregnancy Mode\n• 👶 Child Mode');
+                return;
+            }
+
+            const product = testProducts[productKey];
+            
+            // Evaluate using the population nutrition system
+            const result = evaluateFoodForPopulation(product.nutrition, currentMode, product);
+            
+            // Display results
+            displayResults(result, product.name);
+        }
+
+        function displayResults(result, productName) {
+            const container = document.getElementById('resultContainer');
+            container.classList.add('active');
+
+            // Scroll to results
+            setTimeout(() => {
+                container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+
+            // Update emoji and suitability
+            document.getElementById('resultEmoji').textContent = result.emoji;
+            document.getElementById('resultSuitability').textContent = result.suitability;
+            document.getElementById('resultSuitability').style.color = result.color;
+            document.getElementById('resultProduct').textContent = productName;
+
+            // Update badge
+            const badge = document.getElementById('resultBadge');
+            badge.textContent = result.targetGroup === 'pregnant' ? '🤰 Pregnancy Mode' : '👶 Child Mode';
+            badge.style.background = result.color;
+            badge.style.color = 'white';
+
+            // Update severity indicator
+            const indicator = document.getElementById('severityIndicator');
+            const position = Math.min(100, result.severityScore || 0);
+            indicator.style.left = `${position}%`;
+
+            // Update explanation
+            document.getElementById('resultExplanation').textContent = result.explanation;
+
+            // Update warnings
+            const warningsSection = document.getElementById('warningsSection');
+            const warningsList = document.getElementById('warningsList');
+            if (result.warnings && result.warnings.length > 0) {
+                warningsSection.style.display = 'block';
+                warningsList.innerHTML = result.warnings.map(w => `<li><span>⚠️</span><span>${w}</span></li>`).join('');
+            } else {
+                warningsSection.style.display = 'none';
+            }
+
+            // Update positives
+            const positivesSection = document.getElementById('positivesSection');
+            const positivesList = document.getElementById('positivesList');
+            if (result.positives && result.positives.length > 0) {
+                positivesSection.style.display = 'block';
+                positivesList.innerHTML = result.positives.map(p => `<li><span>✅</span><span>${p}</span></li>`).join('');
+            } else {
+                positivesSection.style.display = 'none';
+            }
+
+            // Update disclaimer
+            document.getElementById('disclaimer').textContent = result.metadata?.disclaimer || 'This information is for awareness only, not medical advice.';
+
+            // Update code output
+            document.getElementById('codeOutput').textContent = result.suitability;
+        }
+
+        // Show welcome message
+        setTimeout(() => {
+            const welcomeMsg = `👋 Welcome to Population Nutrition System!
+
+📋 How to use:
+1️⃣ Select a mode (Pregnancy or Child)
+2️⃣ Click "Test This Product" on any product
+3️⃣ See the detailed safety evaluation
+
+💡 Try this:
+Test Nutella in Pregnancy mode to see a "🚫 Avoid" result!
+Test Greek Yogurt in Child mode to see a "✅ Good Choice"!`;
+            
+        }, 500);
+    </script>
+</body>
+</html>

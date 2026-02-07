@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
     <!-- Dark Mode Toggle -->
     <button class="theme-toggle" id="themeToggle">
@@ -26,7 +28,7 @@
             <div class="header-content">
                 <div class="logo">
                     <i class="fas fa-leaf"></i>
-                    <span>FoodScan Pro</span>
+                    <span>NutraVue</span>
                 </div>
                 <div class="header-actions">
                     <button class="icon-btn" id="settingsBtn" title="Settings">
@@ -38,7 +40,7 @@
                     </button>
                 </div>
             </div>
-            
+
             <!-- Stats Dashboard -->
             <div class="stats-dashboard">
                 <div class="stat-card">
@@ -128,12 +130,8 @@
                 <div class="manual-input">
                     <div class="input-wrapper">
                         <i class="fas fa-barcode"></i>
-                        <input 
-                            type="text" 
-                            id="barcodeInput" 
-                            placeholder="Enter barcode (e.g., 3017620422003)"
-                            maxlength="13"
-                        >
+                        <input type="text" id="barcodeInput" placeholder="Enter barcode (e.g., 3017620422003)"
+                            maxlength="13">
                         <button class="clear-btn" id="clearInputBtn">
                             <i class="fas fa-times"></i>
                         </button>
@@ -190,6 +188,10 @@
                         </div>
                     </button>
                 </div>
+                <a href="/Child.html">
+                <button class="connecting-btn" id=""> <!--conneting btn -->
+                    Check for kids ( under 6 )
+                </button></a>
             </div>
         </div>
 
@@ -242,7 +244,7 @@
                     </p>
                     <div class="product-meta">
                         <span>
-                            <i class="fas fa-barcode"></i> 
+                            <i class="fas fa-barcode"></i>
                             <span id="productBarcode">000000000</span>
                         </span>
                         <button class="meta-btn" id="addToCompareBtn">
@@ -265,14 +267,14 @@
                         </button>
                     </div>
                 </div>
-                
+
                 <div class="score-display">
                     <div class="score-circle-container">
                         <svg class="score-circle-svg" viewBox="0 0 200 200">
                             <defs>
                                 <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" class="gradient-start"/>
-                                    <stop offset="100%" class="gradient-end"/>
+                                    <stop offset="0%" class="gradient-start" />
+                                    <stop offset="100%" class="gradient-end" />
                                 </linearGradient>
                             </defs>
                             <circle class="score-bg" cx="100" cy="100" r="85"></circle>
@@ -338,7 +340,7 @@
                         <button class="serving-btn active" data-serving="serving">Serving</button>
                     </div>
                 </div>
-                
+
                 <div class="nutrition-grid" id="nutritionGrid">
                     <!-- Will be populated by JS -->
                 </div>
@@ -514,7 +516,7 @@
     <!-- External Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js"></script>
-    
+
     <script src="app.js"></script>
     <script src="api-integration.js"></script>
     <script src="daily-value-calculator.js"></script>
@@ -523,7 +525,7 @@
     <script src="health-system-orchestrator.js"></script>
     <script src="test-suite.js"></script>
     <script src="ui-integration (1).js"></script>
-    <script src="maternal-child-nutrition.js"></script>
-     <script src="camera-scanner-fix.js"></script>
+    <script src="camera-scanner-fix.js"></script>
 </body>
+
 </html>

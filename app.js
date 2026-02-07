@@ -900,7 +900,7 @@ function displayNutrition(nutrition) {
             <div class="nutrition-item">
                 <div class="nutrition-header">
                     <span class="nutrition-icon">${item.icon}</span>
-                    <span class="nutrition-label">${item.label}</span>
+                    <span class="nutrition-label style="color: #3b82f6; font-weight: 500;">${item.label}</span>
                     <span class="nutrition-value">${item.value.toFixed(1)}${item.unit}</span>
                 </div>
                 <div class="nutrition-bar">
