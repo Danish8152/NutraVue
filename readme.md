@@ -1,0 +1,1 @@
+#NutraVue is an AI-powered food scanner application designed to help users make healthier food choices by simply scanning packaged food products. It converts complex nutrition labels into easy-to-understand health insights within seconds.
