@@ -1,7 +1,7 @@
 // ============================================
 // OPEN FOOD FACTS API INTEGRATION
 // ============================================
-const API_BASE_URL = 'https://world.openfoodfacts.org/api/v2';
+const API_BASE_URL = 'https://world.openfoodfacts.org/api/v0'; // edited v0
 const USER_AGENT = 'FoodScanPro/1.0 (Nutrition Analysis App)';
 
 /**
@@ -21,7 +21,7 @@ async function fetchProductFromAPI(barcode) {
             throw new Error(`API Error: ${response.status}`);
         }
 
-        const data = await response.json();
+        const data = await response.JSON(); // edited json
         
         if (data.status === 0 || !data.product) {
             throw new Error('Product not found in database');
