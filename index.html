@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🥗 FoodScan Pro - Smart Nutrition Analyzer</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Dark Mode Toggle -->
+    <button class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <!-- Background Animation -->
+    <div class="bg-animation">
+        <div class="circle circle-1"></div>
+        <div class="circle circle-2"></div>
+        <div class="circle circle-3"></div>
+    </div>
+
+    <div class="app-container">
+        <!-- Header with Advanced Stats -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-leaf"></i>
+                    <span>FoodScan Pro</span>
+                </div>
+                <div class="header-actions">
+                    <button class="icon-btn" id="settingsBtn" title="Settings">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                    <button class="icon-btn" id="historyBtn" title="History">
+                        <i class="fas fa-history"></i>
+                        <span class="badge" id="historyBadge">0</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Stats Dashboard -->
+            <div class="stats-dashboard">
+                <div class="stat-card">
+                    <i class="fas fa-barcode"></i>
+                    <div class="stat-info">
+                        <span class="stat-number" id="totalScans">0</span>
+                        <span class="stat-label">Total Scans</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-trophy"></i>
+                    <div class="stat-info">
+                        <span class="stat-number" id="healthyChoices">0</span>
+                        <span class="stat-label">Healthy</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-fire"></i>
+                    <div class="stat-info">
+                        <span class="stat-number" id="streakDays">0</span>
+                        <span class="stat-label">Day Streak</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Scanner Card -->
+        <div class="scanner-card">
+            <div class="scanner-header">
+                <h1>Scan Your Food</h1>
+                <p>AI-powered nutrition analysis in seconds</p>
+            </div>
+
+            <!-- Scanner Mode Tabs -->
+            <div class="scanner-modes">
+                <button class="mode-btn active" data-mode="camera">
+                    <i class="fas fa-camera"></i>
+                    <span>Camera</span>
+                </button>
+                <button class="mode-btn" data-mode="manual">
+                    <i class="fas fa-keyboard"></i>
+                    <span>Manual</span>
+                </button>
+                <button class="mode-btn" data-mode="voice">
+                    <i class="fas fa-microphone"></i>
+                    <span>Voice</span>
+                </button>
+            </div>
+
+            <!-- Camera Scanner -->
+            <div class="scanner-mode active" id="cameraMode">
+                <div class="camera-container">
+                    <video id="cameraVideo" autoplay playsinline></video>
+                    <canvas id="cameraCanvas" style="display: none;"></canvas>
+                    <div class="camera-overlay">
+                        <div class="scan-frame">
+                            <div class="corner corner-tl"></div>
+                            <div class="corner corner-tr"></div>
+                            <div class="corner corner-bl"></div>
+                            <div class="corner corner-br"></div>
+                            <div class="scan-line"></div>
+                        </div>
+                        <div class="camera-instructions">
+                            <i class="fas fa-barcode"></i>
+                            <p>Align barcode within frame</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="camera-controls">
+                    <button class="camera-btn" id="startCameraBtn">
+                        <i class="fas fa-camera"></i>
+                        Start Camera
+                    </button>
+                    <button class="camera-btn secondary" id="captureBtn" style="display: none;">
+                        <i class="fas fa-dot-circle"></i>
+                        Capture
+                    </button>
+                    <button class="camera-btn danger" id="stopCameraBtn" style="display: none;">
+                        <i class="fas fa-stop"></i>
+                        Stop
+                    </button>
+                </div>
+            </div>
+
+            <!-- Manual Input Mode -->
+            <div class="scanner-mode" id="manualMode">
+                <div class="manual-input">
+                    <div class="input-wrapper">
+                        <i class="fas fa-barcode"></i>
+                        <input 
+                            type="text" 
+                            id="barcodeInput" 
+                            placeholder="Enter barcode (e.g., 3017620422003)"
+                            maxlength="13"
+                        >
+                        <button class="clear-btn" id="clearInputBtn">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <button class="scan-btn" id="scanBtn">
+                        <i class="fas fa-search"></i>
+                        <span>Analyze Product</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Voice Input Mode -->
+            <div class="scanner-mode" id="voiceMode">
+                <div class="voice-input">
+                    <button class="voice-btn" id="voiceBtn">
+                        <div class="voice-waves">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                    <p class="voice-status">Tap to speak barcode number</p>
+                    <p class="voice-text" id="voiceText"></p>
+                </div>
+            </div>
+
+            <!-- Demo Products -->
+            <div class="demo-section">
+                <p class="demo-title">
+                    <i class="fas fa-flask"></i> Quick Test Products
+                </p>
+                <div class="demo-products">
+                    <button class="demo-card" data-barcode="3017620422003">
+                        <div class="demo-icon">🍫</div>
+                        <div class="demo-info">
+                            <div class="demo-name">Nutella</div>
+                            <div class="demo-score danger">Score: 0</div>
+                        </div>
+                    </button>
+                    <button class="demo-card" data-barcode="5449000000996">
+                        <div class="demo-icon">🥤</div>
+                        <div class="demo-info">
+                            <div class="demo-name">Coca-Cola</div>
+                            <div class="demo-score danger">Score: 14</div>
+                        </div>
+                    </button>
+                    <button class="demo-card" data-barcode="8901719114694">
+                        <div class="demo-icon">🍜</div>
+                        <div class="demo-info">
+                            <div class="demo-name">Maggi</div>
+                            <div class="demo-score warning">Score: 42</div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="loading-content">
+                <div class="scanner-animation">
+                    <div class="scanner-beam"></div>
+                    <i class="fas fa-barcode barcode-icon"></i>
+                </div>
+                <h3>Analyzing Product...</h3>
+                <div class="loading-steps">
+                    <div class="loading-step active">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Reading barcode</span>
+                    </div>
+                    <div class="loading-step" id="step2">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <span>Fetching data</span>
+                    </div>
+                    <div class="loading-step" id="step3">
+                        <i class="fas fa-circle"></i>
+                        <span>Calculating health score</span>
+                    </div>
+                    <div class="loading-step" id="step4">
+                        <i class="fas fa-circle"></i>
+                        <span>Generating insights</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-container" id="resultsContainer">
+            <!-- Product Card with 3D Effect -->
+            <div class="product-card slide-up">
+                <div class="product-image-wrapper">
+                    <img id="productImage" src="" alt="Product">
+                    <div class="image-badges">
+                        <span class="demo-badge" id="demoBadge">
+                            <i class="fas fa-info-circle"></i> Demo
+                        </span>
+                    </div>
+                </div>
+                <div class="product-details">
+                    <h2 id="productName">Product Name</h2>
+                    <p id="productBrand" class="brand">
+                        <i class="fas fa-building"></i>
+                        <span>Brand Name</span>
+                    </p>
+                    <div class="product-meta">
+                        <span>
+                            <i class="fas fa-barcode"></i> 
+                            <span id="productBarcode">000000000</span>
+                        </span>
+                        <button class="meta-btn" id="addToCompareBtn">
+                            <i class="fas fa-plus"></i> Compare
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Health Score with Animated Circle -->
+            <div class="score-card slide-up" style="animation-delay: 0.1s">
+                <div class="score-header">
+                    <h3><i class="fas fa-heartbeat"></i> Health Analysis</h3>
+                    <div class="score-actions">
+                        <button class="icon-btn-small" id="voiceAnalysisBtn" title="Voice Analysis">
+                            <i class="fas fa-volume-up"></i>
+                        </button>
+                        <button class="icon-btn-small" id="shareScoreBtn" title="Share">
+                            <i class="fas fa-share-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="score-display">
+                    <div class="score-circle-container">
+                        <svg class="score-circle-svg" viewBox="0 0 200 200">
+                            <defs>
+                                <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" class="gradient-start"/>
+                                    <stop offset="100%" class="gradient-end"/>
+                                </linearGradient>
+                            </defs>
+                            <circle class="score-bg" cx="100" cy="100" r="85"></circle>
+                            <circle class="score-progress" id="scoreCircle" cx="100" cy="100" r="85"></circle>
+                        </svg>
+                        <div class="score-content">
+                            <div class="score-emoji" id="scoreEmoji">🤔</div>
+                            <div class="score-number" id="scoreNumber">0</div>
+                            <div class="score-label" id="scoreLabel">Analyzing...</div>
+                        </div>
+                    </div>
+                    <div class="score-breakdown">
+                        <div class="score-grade" id="scoreGrade">
+                            <span class="grade-label">Grade</span>
+                            <span class="grade-value">-</span>
+                        </div>
+                        <div class="score-percentile">
+                            <span class="percentile-label">Better than</span>
+                            <span class="percentile-value" id="percentileValue">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="score-recommendation" id="scoreRecommendation">
+                    <i class="fas fa-lightbulb"></i>
+                    <p>Calculating health impact...</p>
+                </div>
+
+                <!-- AI Insights -->
+                <div class="ai-insights" id="aiInsights">
+                    <div class="insight-header">
+                        <i class="fas fa-robot"></i>
+                        <span>AI Insights</span>
+                    </div>
+                    <div class="insights-list" id="insightsList"></div>
+                </div>
+            </div>
+
+            <!-- Warnings with Animation -->
+            <div class="warnings-card slide-up" id="warningsCard" style="animation-delay: 0.2s">
+                <div class="warnings-header">
+                    <h3><i class="fas fa-shield-alt"></i> Health Alerts</h3>
+                    <span class="warning-count" id="warningCount">0</span>
+                </div>
+                <div class="warnings-list" id="warningsList"></div>
+            </div>
+
+            <!-- Personalized Allergy Alerts -->
+            <div class="allergy-card slide-up" id="allergyCard" style="animation-delay: 0.25s; display: none;">
+                <div class="allergy-header">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>⚠️ Allergy Alert</h3>
+                </div>
+                <div class="allergy-content" id="allergyContent"></div>
+            </div>
+
+            <!-- Nutrition with Better Visuals -->
+            <div class="nutrition-card slide-up" style="animation-delay: 0.3s">
+                <div class="nutrition-header">
+                    <h3><i class="fas fa-clipboard-list"></i> Nutrition Facts</h3>
+                    <div class="serving-controls">
+                        <button class="serving-btn" data-serving="100">100g</button>
+                        <button class="serving-btn active" data-serving="serving">Serving</button>
+                    </div>
+                </div>
+                
+                <div class="nutrition-grid" id="nutritionGrid">
+                    <!-- Will be populated by JS -->
+                </div>
+
+                <!-- Daily Value Progress -->
+                <div class="daily-tracker">
+                    <h4><i class="fas fa-calendar-day"></i> Today's Intake</h4>
+                    <div class="daily-progress">
+                        <div class="daily-item">
+                            <span>Calories</span>
+                            <div class="daily-bar">
+                                <div class="daily-fill" id="dailyCalories"></div>
+                            </div>
+                            <span id="dailyCaloriesText">0/2000 kcal</span>
+                        </div>
+                        <button class="add-to-tracker-btn" id="addToTrackerBtn">
+                            <i class="fas fa-plus"></i> Add to Today
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alternative Products -->
+            <div class="alternatives-card slide-up" id="alternativesCard" style="animation-delay: 0.35s">
+                <div class="alternatives-header">
+                    <h3><i class="fas fa-sync-alt"></i> Healthier Alternatives</h3>
+                </div>
+                <div class="alternatives-list" id="alternativesList"></div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons slide-up" style="animation-delay: 0.4s">
+                <button class="action-btn primary" id="scanAgainBtn">
+                    <i class="fas fa-redo"></i>
+                    Scan Another
+                </button>
+                <button class="action-btn secondary" id="exportPDFBtn">
+                    <i class="fas fa-file-pdf"></i>
+                    Export PDF
+                </button>
+                <button class="action-btn secondary" id="saveBtn">
+                    <i class="fas fa-bookmark"></i>
+                    Save
+                </button>
+            </div>
+        </div>
+
+        <!-- History Modal -->
+        <div class="modal" id="historyModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fas fa-history"></i> Scan History</h3>
+                    <button class="modal-close" id="closeHistoryBtn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="history-filters">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="healthy">Healthy</button>
+                        <button class="filter-btn" data-filter="unhealthy">Unhealthy</button>
+                    </div>
+                    <div class="history-list" id="historyList">
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <p>No scans yet. Start scanning products!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Modal -->
+        <div class="modal" id="settingsModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fas fa-cog"></i> Settings</h3>
+                    <button class="modal-close" id="closeSettingsBtn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Voice Settings -->
+                    <div class="settings-section">
+                        <h4><i class="fas fa-volume-up"></i> Voice Assistant</h4>
+                        <div class="setting-item">
+                            <label class="switch">
+                                <input type="checkbox" id="voiceEnabled" checked>
+                                <span class="slider"></span>
+                            </label>
+                            <span>Enable voice analysis</span>
+                        </div>
+                    </div>
+
+                    <!-- Dietary Preferences -->
+                    <div class="settings-section">
+                        <h4><i class="fas fa-utensils"></i> Dietary Preferences</h4>
+                        <div class="preferences-grid">
+                            <label class="preference-checkbox">
+                                <input type="checkbox" name="diet" value="vegetarian">
+                                <span>🌱 Vegetarian</span>
+                            </label>
+                            <label class="preference-checkbox">
+                                <input type="checkbox" name="diet" value="vegan">
+                                <span>🥬 Vegan</span>
+                            </label>
+                            <label class="preference-checkbox">
+                                <input type="checkbox" name="diet" value="keto">
+                                <span>🥓 Keto</span>
+                            </label>
+                            <label class="preference-checkbox">
+                                <input type="checkbox" name="diet" value="diabetic">
+                                <span>💉 Diabetic</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Allergen Alerts -->
+                    <div class="settings-section">
+                        <h4><i class="fas fa-exclamation-triangle"></i> Allergen Alerts</h4>
+                        <div class="allergen-list">
+                            <label class="allergen-tag">
+                                <input type="checkbox" name="allergen" value="nuts">
+                                <span>🥜 Nuts</span>
+                            </label>
+                            <label class="allergen-tag">
+                                <input type="checkbox" name="allergen" value="dairy">
+                                <span>🥛 Dairy</span>
+                            </label>
+                            <label class="allergen-tag">
+                                <input type="checkbox" name="allergen" value="gluten">
+                                <span>🌾 Gluten</span>
+                            </label>
+                            <label class="allergen-tag">
+                                <input type="checkbox" name="allergen" value="soy">
+                                <span>🫘 Soy</span>
+                            </label>
+                            <label class="allergen-tag">
+                                <input type="checkbox" name="allergen" value="eggs">
+                                <span>🥚 Eggs</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Daily Goals -->
+                    <div class="settings-section">
+                        <h4><i class="fas fa-bullseye"></i> Daily Goals</h4>
+                        <div class="goal-input">
+                            <label>Calorie Target</label>
+                            <input type="number" id="calorieGoal" value="2000" min="1000" max="5000">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Achievement Popup -->
+        <div class="achievement-popup" id="achievementPopup">
+            <div class="achievement-content">
+                <i class="fas fa-trophy achievement-icon"></i>
+                <h3 id="achievementTitle">Achievement Unlocked!</h3>
+                <p id="achievementDesc">First scan completed</p>
+            </div>
+        </div>
+
+        <!-- Toast Notification -->
+        <div class="toast" id="toast">
+            <i class="fas fa-check-circle"></i>
+            <span id="toastMessage">Success!</span>
+        </div>
+    </div>
+
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js"></script>
+    
+    <script src="app.js"></script>
+</body>
+</html>
