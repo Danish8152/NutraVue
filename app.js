@@ -21,7 +21,7 @@ async function fetchProductFromAPI(barcode) {
             throw new Error(`API Error: ${response.status}`);
         }
 
-        const data = await response.JSON(); // edited json
+        const data = await response.json(); // edited json
         
         if (data.status === 0 || !data.product) {
             throw new Error('Product not found in database');
